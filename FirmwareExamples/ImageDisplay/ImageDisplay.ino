@@ -39,9 +39,13 @@ uint32_t delayScarfTop = 0;
 String imageFilename = "/image.jpg";
 boolean uploading = false;
 boolean updatedImage = false;
+int16_t imageOffset_x = 0;
+int16_t imageOffset_y = 0;
 
 uint8_t frameRate_Hz = 20;
 uint32_t delayFrame = 0;
+
+uint32_t watchDogBreak = 0;
 
 
 void setup() {
@@ -141,13 +145,13 @@ void initLED() {
 }
 
 
-uint32_t watchDogBreak = 0;
 void displayJpgMatrix() {
     // Get the width and height in pixels of the jpeg if you wish
     uint16_t w = 0, h = 0;
     TJpgDec.getFsJpgSize(&w, &h, imageFilename, SPIFFS);
     // Serial.print(w); Serial.print("x"); Serial.print(h); Serial.print(" -> "); Serial.print(w/8);  Serial.print("x"); Serial.println(h/8);
 
+    // The jpeg is a bitmap of 8x8 pixel blocks
     w = w / 8;
     h = h / 8;
 
@@ -162,9 +166,12 @@ void displayJpgMatrix() {
     }
     TJpgDec.setJpgScale(scaling);
 
-
-    // TODO center image !!!
-
+    // Caluclate offsets for later centering
+    w = w / scaling;
+    h = h / scaling;
+    imageOffset_x = (LED_MATRIX_WIDTH - w) / 2;
+    imageOffset_y = (LED_MATRIX_HEIGHT - h) / 2;
+    // Serial.print("Offset: "); Serial.print(offset_x); Serial.println(imageOffset_y);
 
     watchDogBreak = millis() + 1000;
     TJpgDec.drawFsJpg(0, 0, imageFilename, SPIFFS);
@@ -182,8 +189,10 @@ bool displayJpegMatrix(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* b
     x = x / 8;
     y = y / 8;
 
-    if (y > LED_MATRIX_HEIGHT - 1 || x > LED_MATRIX_WIDTH - 1) {
-        // Serial.print("Row or col out of bounds:"); Serial.print(y); Serial.print(", "); Serial.println(x);
+    // Center image on matrix
+    x += imageOffset_x;
+    y += imageOffset_y;
+    if ((x < 0) || (y < 0) || (x > LED_MATRIX_WIDTH - 1) || (y > LED_MATRIX_HEIGHT - 1)) { // Skip if outside matrix
         return true;
     }
 
