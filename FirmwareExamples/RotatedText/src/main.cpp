@@ -71,8 +71,8 @@ void setMatrix()
         matrix->setTextWrap(false);
         matrix->setTextSize(1);
         matrix->setRotation(0);
-        matrix->setTextColor(matrix->Color(0,0,255));
-        matrix->print("Annalina :)");
+        matrix->setTextColor(matrix->Color(255,0,255));
+        matrix->print("LuxCamp 2024");
     }
 
     // vertical text
@@ -83,19 +83,14 @@ void setMatrix()
         matrix->setTextWrap(false);
         matrix->setTextSize(fontSize);
         matrix->setRotation(3);
-        if (step<(animation2Length/2-10)) {
-            matrix->setTextColor(matrix->Color(0,255,255));
-        }
-        else {
-            matrix->setTextColor(matrix->Color(255,255,0));
-        }
+        matrix->setTextColor(matrix->Color(255,0,255));
         matrix->print("Spit Happens!");
     }
 }
 
 void setEye()
 {
-    matrix->setPixelColor(EYE, 0,255,30);
+    matrix->setPixelColor(EYE, 255,0,0);
 }
 
 void setHorn()
