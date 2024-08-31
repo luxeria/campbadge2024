@@ -2,3 +2,4 @@
 
 - Simple
 - RotatedText
+- ImageDisplay
